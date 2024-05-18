@@ -179,11 +179,12 @@ def zip_output():
     """
     zips the output csv file and then deletes all the intermediate folders and files.
     """
-    zip = ZipFile("/opt/airflow/files/preprocessed_files/final_output.zip", "w", ZIP_DEFLATED)
-    zip.write("/opt/airflow/files/preprocessed_files/final_output.csv")
-    zip.close()
+    #Uncomment to instead save a zip file
+    # zip = ZipFile("/opt/airflow/files/preprocessed_files/final_output.zip", "w", ZIP_DEFLATED)
+    # zip.write("/opt/airflow/files/preprocessed_files/final_output.csv")
+    # zip.close()
     try:
-        os.remove("/opt/airflow/files/preprocessed_files/final_output.csv")
+        # os.remove("/opt/airflow/files/preprocessed_files/final_output.csv")
         os.rmdir("/opt/airflow/files/extracted_files")
         os.rmdir("/opt/airflow/files/Downloaded_files")
     except:
