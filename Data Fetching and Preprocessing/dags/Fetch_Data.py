@@ -2,7 +2,8 @@
 from airflow import DAG
 from airflow.models import Variable
 from airflow.operators.python_operator import PythonOperator
-from zipfile import ZipFile
+
+from zipfile import ZipFile, ZIP_DEFLATED
 from urllib.request import urlretrieve
 from pathlib import Path
 
@@ -174,7 +175,20 @@ def preprocess_data():
 
     full_df.to_csv(f'/opt/airflow/files/preprocessed_files/final_output.csv')
 
-
+def zip_output():
+    """
+    zips the output csv file and then deletes all the intermediate folders and files.
+    """
+    zip = ZipFile("/opt/airflow/files/preprocessed_files/final_output.zip", "w", ZIP_DEFLATED)
+    zip.write("/opt/airflow/files/preprocessed_files/final_output.csv")
+    zip.close()
+    try:
+        os.remove("/opt/airflow/files/preprocessed_files/final_output.csv")
+        os.rmdir("/opt/airflow/files/extracted_files")
+        os.rmdir("/opt/airflow/files/Downloaded_files")
+    except:
+        pass
+    
 with DAG('fetch_data_files', start_date=datetime(2016, 1, 1), default_args={"retries" : 0}, catchup = False) as dag:
     
     #creates tasks based on the number of workers specified. I have specified 6.
@@ -192,5 +206,9 @@ with DAG('fetch_data_files', start_date=datetime(2016, 1, 1), default_args={"ret
         task_id = 'preprocess_data',
         python_callable = preprocess_data
     )
+    zip_task = PythonOperator(
+        task_id = 'zip_output',
+        python_callable = zip_output
+    )
 
-get_files_task >> unzip_task >> preprocess_task
+get_files_task >> unzip_task >> preprocess_task >> zip_task
