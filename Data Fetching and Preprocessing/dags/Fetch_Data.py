@@ -84,26 +84,6 @@ ASCII_dict = {
     "38" : "8",
     "39" : "9",
 }
-#Get a Dag variable num_files which specifies how many files to download for a given year
-num_files = Variable.get('num_files', default_var = -1)
-
-def split(a, n):
-    k, m = divmod(len(a), n)
-    return list(a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
-
-def read_imagefile(file:str) -> Image.Image:
-    """
-    Function to read an image file such as jpg, jpeg or png 
-
-    Args:
-        file (str): path to the image including the file name and extension
-
-    Returns:
-        Image.Image: a python PIL image object
-    """
-    image = Image.open(file)
-    return image
-
 
 
 def format_image(image:Image.Image) -> np.array:
