@@ -84,26 +84,6 @@ ASCII_dict = {
     "38" : "8",
     "39" : "9",
 }
-#Get a Dag variable num_files which specifies how many files to download for a given year
-num_files = Variable.get('num_files', default_var = -1)
-
-def split(a, n):
-    k, m = divmod(len(a), n)
-    return list(a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
-
-def read_imagefile(file:str) -> Image.Image:
-    """
-    Function to read an image file such as jpg, jpeg or png 
-
-    Args:
-        file (str): path to the image including the file name and extension
-
-    Returns:
-        Image.Image: a python PIL image object
-    """
-    image = Image.open(file)
-    return image
-
 
 
 def format_image(image:Image.Image) -> np.array:
@@ -179,11 +159,12 @@ def zip_output():
     """
     zips the output csv file and then deletes all the intermediate folders and files.
     """
-    zip = ZipFile("/opt/airflow/files/preprocessed_files/final_output.zip", "w", ZIP_DEFLATED)
-    zip.write("/opt/airflow/files/preprocessed_files/final_output.csv")
-    zip.close()
+    #Uncomment to instead save a zip file
+    # zip = ZipFile("/opt/airflow/files/preprocessed_files/final_output.zip", "w", ZIP_DEFLATED)
+    # zip.write("/opt/airflow/files/preprocessed_files/final_output.csv")
+    # zip.close()
     try:
-        os.remove("/opt/airflow/files/preprocessed_files/final_output.csv")
+        # os.remove("/opt/airflow/files/preprocessed_files/final_output.csv")
         os.rmdir("/opt/airflow/files/extracted_files")
         os.rmdir("/opt/airflow/files/Downloaded_files")
     except:
